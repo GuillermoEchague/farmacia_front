@@ -15,6 +15,9 @@
   --radius-xl: 0.75rem;
 }
 
+/* Enable class-based dark mode */
+@variant dark (&:where(.dark, .dark *));
+
 @layer base {
   body {
     @apply font-display bg-background-light dark:bg-background-dark min-h-screen;

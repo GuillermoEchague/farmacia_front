@@ -1,86 +1,101 @@
-import { useState } from "react";
-import "../styles/inventory.css";
-import { Product } from "../types/product";
-import InventoryHeader from "../components/inventory/InventoryHeader";
-import SearchBar from "../components/inventory/SearchBar";
-import FilterTabs from "../components/inventory/FilterTabs";
+import { useState, useEffect } from "react";
+import MobileLayout from "../components/MobileLayout";
 import ProductItem from "../components/inventory/ProductItem";
-import BottomNav from "../components/BottomNav";
-
-const mockProducts: Product[] = [
-  {
-    id: 1,
-    name: "Amoxicillin 500mg",
-    available: 14,
-    expiry: "10/2025",
-    category: "Antibiotics",
-    price: 24.5,
-    lowStock: true,
-  },
-  {
-    id: 2,
-    name: "Lisinopril 10mg",
-    available: 150,
-    expiry: "12/2026",
-    category: "Blood Pressure",
-    price: 12.99,
-  },
-  {
-    id: 3,
-    name: "Metformin 850mg",
-    available: 82,
-    expiry: "04/2024",
-    category: "Diabetes",
-    price: 18.25,
-    criticalExpiry: true,
-  },
-  {
-    id: 4,
-    name: "Atorvastatin 20mg",
-    available: 310,
-    expiry: "08/2027",
-    category: "Cholesterol",
-    price: 35,
-  },
-  {
-    id: 5,
-    name: "Omeprazole 20mg",
-    available: 8,
-    expiry: "02/2026",
-    category: "Gastrointestinal",
-    price: 15.45,
-    lowStock: true,
-  },
-];
+import { getProducts } from "../api/inventory.service";
+import type { Product } from "../types/product";
 
 const Inventory = () => {
+  const [products, setProducts] = useState<Product[]>([]);
+  const [loading, setLoading] = useState(true);
   const [search, setSearch] = useState("");
-  const [filter, setFilter] = useState("all");
 
-  const filteredProducts = mockProducts.filter((p) => {
-    if (filter === "low") return p.lowStock;
-    if (filter === "expiry") return p.criticalExpiry;
-    return p.name.toLowerCase().includes(search.toLowerCase());
-  });
+  useEffect(() => {
+    const fetchProducts = async () => {
+      const data = await getProducts();
+      setProducts(data);
+      setLoading(false);
+    };
+    fetchProducts();
+  }, []);
+
+  const filteredProducts = products.filter(p =>
+    p.name.toLowerCase().includes(search.toLowerCase()) ||
+    p.category.toLowerCase().includes(search.toLowerCase())
+  );
 
   return (
-    <div className="inventory-container">
-      <InventoryHeader />
+    <MobileLayout>
+      {/* Header / TopAppBar */}
+      <header className="sticky top-0 z-50 bg-white dark:bg-background-dark border-b border-[#e5e7eb] dark:border-gray-800">
+        <div className="flex items-center p-4 pb-2 justify-between">
+          <div className="flex items-center gap-2">
+            <div className="text-[#111518] dark:text-white flex size-10 shrink-0 items-center justify-center">
+              <span className="material-symbols-outlined">inventory_2</span>
+            </div>
+            <h2 className="text-[#111518] dark:text-white text-xl font-bold leading-tight tracking-[-0.015em]">Inventory</h2>
+          </div>
+          <div className="flex items-center justify-end">
+            <button className="flex h-10 items-center justify-center rounded-lg bg-primary text-white px-4 gap-2 text-sm font-bold leading-normal transition-colors hover:bg-primary/90">
+              <span className="material-symbols-outlined !text-[20px]">add</span>
+              <span>Product</span>
+            </button>
+          </div>
+        </div>
+        {/* SearchBar */}
+        <div className="px-4 py-3">
+          <label className="flex flex-col min-w-40 h-11 w-full">
+            <div className="flex w-full flex-1 items-stretch rounded-lg h-full">
+              <div className="text-[#637c88] flex border-none bg-[#f0f3f4] dark:bg-gray-800 items-center justify-center pl-4 rounded-l-lg">
+                <span className="material-symbols-outlined">search</span>
+              </div>
+              <input
+                className="flex w-full min-w-0 flex-1 rounded-r-lg text-[#111518] dark:text-white focus:outline-0 focus:ring-0 border-none bg-[#f0f3f4] dark:bg-gray-800 h-full placeholder:text-[#637c88] px-4 pl-2 text-base font-normal leading-normal"
+                placeholder="Search products or categories..."
+                value={search}
+                onChange={(e) => setSearch(e.target.value)}
+              />
+            </div>
+          </label>
+        </div>
+        {/* Chips / Filters */}
+        <div className="flex gap-2 px-4 pb-4 overflow-x-auto no-scrollbar">
+          <div className="flex h-8 shrink-0 items-center justify-center gap-x-2 rounded-full bg-primary text-white px-4">
+            <p className="text-xs font-semibold">All Items</p>
+          </div>
+          <div className="flex h-8 shrink-0 items-center justify-center gap-x-2 rounded-full bg-amber-100 dark:bg-amber-900/30 text-amber-700 dark:text-amber-400 px-4 border border-amber-200 dark:border-amber-800">
+            <span className="material-symbols-outlined !text-[16px]">warning</span>
+            <p className="text-xs font-semibold">Low Stock</p>
+          </div>
+          <div className="flex h-8 shrink-0 items-center justify-center gap-x-2 rounded-full bg-[#f0f3f4] dark:bg-gray-800 text-[#111518] dark:text-gray-300 px-4">
+            <p className="text-xs font-semibold">Near Expiry</p>
+          </div>
+        </div>
+      </header>
 
-      <SearchBar value={search} onChange={setSearch} />
+      <main className="flex-1 w-full">
+        {/* Summary Bar */}
+        <div className="px-4 py-2 bg-background-light dark:bg-background-dark/50">
+          <p className="text-xs font-semibold text-[#637c88] uppercase tracking-wider">
+            Total Products: {products.length}
+          </p>
+        </div>
 
-      <FilterTabs active={filter} onChange={setFilter} />
+        {/* List Items */}
+        <div className="flex flex-col">
+          {loading ? (
+            <div className="p-8 text-center">Loading inventory...</div>
+          ) : (
+            filteredProducts.map(product => (
+              <ProductItem key={product.id} product={product} />
+            ))
+          )}
+        </div>
 
-      <p className="total">TOTAL PRODUCTS: {filteredProducts.length}</p>
-
-      {filteredProducts.map((product) => (
-        <ProductItem key={product.id} product={product} />
-      ))}
-
-      <p className="end">End of inventory list</p>
-
-      <BottomNav />
-    </div>
+        <div className="p-8 text-center opacity-40">
+          <p className="text-xs">End of inventory list</p>
+        </div>
+      </main>
+    </MobileLayout>
   );
 };
 

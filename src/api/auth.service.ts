@@ -1,6 +1,15 @@
-import api from "./axios";
-
+// Mock auth service
 export const login = async (username: string, password: string) => {
-  const { data } = await api.post("/auth/login", { username, password });
-  return data;
+  console.log("Mock login for:", username, password.length > 0 ? "with password" : "");
+  // Simulate API delay
+  await new Promise(resolve => setTimeout(resolve, 500));
+
+  return {
+    token: "mock-jwt-token-for-" + username,
+    user: {
+      id: "1",
+      username: username,
+      role: "admin"
+    }
+  };
 };

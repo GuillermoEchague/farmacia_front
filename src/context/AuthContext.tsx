@@ -1,3 +1,4 @@
+/* eslint-disable react-refresh/only-export-components */
 import { createContext, useContext, useState } from "react";
 import { login as loginService } from "../api/auth.service";
 
@@ -13,9 +14,14 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
   const [isAuth, setIsAuth] = useState(!!localStorage.getItem("token"));
 
   const login = async (username: string, password: string) => {
-    const res = await loginService(username, password);
-    localStorage.setItem("token", res.token);
-    setIsAuth(true);
+    try {
+      const res = await loginService(username, password);
+      localStorage.setItem("token", res.token);
+      setIsAuth(true);
+    } catch (error) {
+      console.error("Login failed", error);
+      throw error;
+    }
   };
 
   const logout = () => {

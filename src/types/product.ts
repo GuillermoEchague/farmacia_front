@@ -1,10 +1,10 @@
 export interface Product {
-  id: number;
+  id: string;
   name: string;
-  available: number;
-  expiry: string;
-  category: string;
+  sku: string;
+  stock: number;
   price: number;
-  lowStock?: boolean;
-  criticalExpiry?: boolean;
+  category: string;
+  expiryDate: string;
+  status: 'in-stock' | 'low-stock' | 'critical-expiry' | 'out-of-stock';
 }

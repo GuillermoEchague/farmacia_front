@@ -6,10 +6,11 @@ import SalesPOS from "../pages/SalesPOS";
 import Reports from "../pages/Reports";
 import ReportPreview from "../pages/ReportPreview";
 import { useAuth } from "../context/AuthContext";
+import React from "react";
 
-const PrivateRoute = ({ children }: { children: JSX.Element }) => {
+const PrivateRoute = ({ children }: { children: React.ReactNode }) => {
   const { isAuth } = useAuth();
-  return isAuth ? children : <Navigate to="/login" />;
+  return isAuth ? <>{children}</> : <Navigate to="/login" />;
 };
 
 const AppRouter = () => (
@@ -19,6 +20,10 @@ const AppRouter = () => (
 
       <Route
         path="/"
+        element={<Navigate to="/dashboard" />}
+      />
+      <Route
+        path="/dashboard"
         element={
           <PrivateRoute>
             <Dashboard />
@@ -50,7 +55,7 @@ const AppRouter = () => (
         }
       />
       <Route
-        path="/reports/preview"
+        path="/report-preview"
         element={
           <PrivateRoute>
             <ReportPreview />

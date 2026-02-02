@@ -1,0 +1,107 @@
+.reports-container {
+    padding: 16px;
+    background: #f5f7fa;
+    min-height: 100vh;
+  }
+  
+  .reports-header {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+  
+  .type-selector {
+    display: flex;
+    gap: 12px;
+    margin: 12px 0;
+  }
+  
+  .type-selector button {
+    flex: 1;
+    padding: 12px;
+    border-radius: 14px;
+    border: none;
+    background: #e5e7eb;
+  }
+  
+  .type-selector .active {
+    background: #0284c7;
+    color: white;
+  }
+  
+  .period {
+    background: white;
+    padding: 16px;
+    border-radius: 16px;
+  }
+  
+  .month {
+    text-align: center;
+    margin-bottom: 12px;
+  }
+  
+  .calendar {
+    display: grid;
+    grid-template-columns: repeat(7, 1fr);
+    gap: 6px;
+    text-align: center;
+  }
+  
+  .calendar span {
+    padding: 6px;
+    border-radius: 8px;
+  }
+  
+  .calendar .selected {
+    background: #0284c7;
+    color: white;
+  }
+  
+  .preview-header {
+    display: flex;
+    justify-content: space-between;
+    margin: 16px 0 8px;
+  }
+  
+  .table {
+    background: white;
+    border-radius: 14px;
+  }
+  
+  .table-header,
+  .table-row {
+    display: grid;
+    grid-template-columns: 2fr 1fr 1fr 1fr;
+    padding: 12px;
+  }
+  
+  .table-header {
+    font-weight: 600;
+    background: #f1f5f9;
+  }
+  
+  .table-row {
+    border-top: 1px solid #e5e7eb;
+  }
+  
+  .export {
+    margin-top: 24px;
+  }
+  
+  .export-main {
+    width: 100%;
+    padding: 16px;
+    background: #0284c7;
+    color: white;
+    border: none;
+    border-radius: 14px;
+    font-size: 16px;
+  }
+  
+  .formats {
+    display: flex;
+    justify-content: center;
+    gap: 24px;
+    margin-top: 12px;
+  }
+  
